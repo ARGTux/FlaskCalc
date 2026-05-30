@@ -1,6 +1,6 @@
 # Calc
 ### Description
-This is a simple Flask calculator app. This was my final project for the CS50 course I took in edX, offered by Havard University.
+This is a Flask calculator app. This was my final project for the [CS50](https://www.edx.org/learn/computer-science/harvard-university-cs50-s-introduction-to-computer-science) course I took in edX, offered by Havard University.
 
 This project provides a web-based scientific calculator built with Flask for the backend and a lightweight client-side UI for interactions. It combines a classic calculator layout with scientific features such as trigonometric functions, logarithms, powers, roots, complex number support, and a memory register. The interface supports common calculator symbols (π, ×, ÷, √, superscript exponents), automatic closing of parentheses, and keyboard input so it feels natural to type expressions directly. The angle mode can be switched between radians and degrees, and users can store and recall a single memory value.
 
