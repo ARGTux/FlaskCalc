@@ -8,7 +8,7 @@
 
 	Most of the expression parsing and evaluation is handled client-side by math.js, while Flask mainly serves the templates and static assets. This keeps the project simple to run locally and easy to adapt or extend. It can work as a standalone calculator tool, a learning project, or something to embed inside a larger Flask application.
 
-#### Video Demo: _video_url_
+#### Video Demo: [Flask Calc showcase](https://youtu.be/1A48G1Pfj04)
 
 ## Notes
 1. Install dependencies
