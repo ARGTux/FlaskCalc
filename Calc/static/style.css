@@ -1,0 +1,461 @@
+/* External Font Imports */
+@import url('https://fonts.cdnfonts.com/css/calculator');
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
+
+/* CSS Custom Properties */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --radius: 10px;
+  --accent: #1f6feb;
+}
+
+/* Base Styles & Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #282c34;
+  display: flex;
+  justify-content: center;
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Buttons Focus Outline */
+button:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Error Styles */
+.error {
+  border: 2px solid red;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.85em;
+  margin-top: 4px;
+}
+
+/* Not Found / 404 styles (moved next to error styles for discoverability) */
+.notfound-container {
+  margin-top: 140px;
+  text-align: center;
+  color: #ddd;
+}
+
+.notfound-btn {
+  margin-top: 25px;
+  padding: 12px 22px;
+  font-size: 17px;
+  background-color: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.notfound-btn:hover {
+  background-color: #3a3a3a;
+}
+
+/* Layout Components */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background: #1e1e1e;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  z-index: 9999;
+}
+
+/* Help Button & Overlay */
+.help-container {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  z-index: 1000000;
+}
+
+.help-container button {
+  background-color: #444;
+  color: #fff;
+  border: none;
+  width: 80px;
+  height: 28px;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.help-container button:hover {
+  background-color: #666;
+}
+
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  z-index: 999;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+#overlayBox {
+  background: #222;
+  color: #fff;
+  padding: 20px 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  text-align: center;
+  max-width: 700px;
+  width: 90%;
+  margin: auto;
+}
+
+#closeOverlay {
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 28px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+#closeOverlay:hover {
+  background: #1f6feb;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(31, 111, 235, 0.6);
+}
+
+#closeOverlay:active {
+  transform: translateY(1px);
+  background: #2b2b2b;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Overlay Scrollbar */
+#overlay::-webkit-scrollbar {
+  width: 6px;
+}
+#overlay::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 3px;
+}
+#overlay::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* Keybinding Tables */
+.keybind-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+.keybind-table {
+  width: 48%;
+  min-width: 250px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #1b1b1b;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.keybind-table caption {
+  background: #2c2c2c;
+  color: #fff;
+  font-weight: bold;
+  padding: 8px;
+  font-size: 16px;
+  text-align: center;
+  border-bottom: 1px solid #333;
+}
+
+.keybind-table th,
+.keybind-table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid #333;
+  font-size: 15px;
+}
+
+.keybind-table th {
+  color: #a8a8a8;
+  font-weight: 600;
+  background: #242424;
+}
+
+.keybind-table tr:last-child td {
+  border-bottom: none;
+}
+
+.keybind-table tr:hover td {
+  background: #2c2c2c;
+}
+
+.keybind-table td:first-child {
+  width: 35%;
+  color: #9fdcff;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* Calculator Style System */
+/* Calculator Container */
+.calculator {
+  margin-top: 80px;
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+  background: #1e1e1e;
+  border-radius: var(--radius);
+  box-shadow: 0 0 20px #000;
+  transform: scale(0.9);
+}
+
+/* Display */
+.display {
+  font-family: 'Share Tech Mono', monospace;
+  background: #000;
+  color: #0f0;
+  font-size: 2em;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: right;
+  margin-bottom: 10px;
+  overflow-x: auto;
+}
+
+/* Calculator Grid System */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 10px;
+}
+
+/* Button Styling System */
+button {
+  padding: 20px;
+  font-size: 1.2em;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #555;
+}
+
+button.equals,
+button.zero {
+  grid-column: span 2;
+}
+
+button.numbers {
+  background: #455751;
+}
+
+button.disabled:hover {
+  background: #333;
+}
+
+button.mode {
+  background: #454657;
+  grid-column: span 2;
+  font-size: 1em;
+}
+
+/* Graphing Calculator Components */
+.graph-calculator {
+  margin-top: 80px;
+  padding: 20px;
+  width: 100%;
+  max-width: 1000px;
+  background: #1e1e1e;
+  border-radius: var(--radius);
+  box-shadow: 0 0 20px #000;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.plotForm {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  margin: 10px;
+}
+
+.functionInputs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.functionWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  background: #454657;
+  border-radius: 15px;
+}
+
+.plot {
+  margin-top: 10px;
+  padding: 10px;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+#plotly {
+  width: 100% !important;
+  min-height: 300px;
+  height: auto !important;
+}
+
+.function-control {
+  display: flex;
+  gap: 5px;
+}
+
+.function-input:disabled {
+  background: #555;
+  color: #aaa;
+  border: 1px solid #888;
+  cursor: not-allowed;
+}
+
+/* Responsive Design System */
+@media (max-width: 768px) {
+  .functionInputs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .graph-calculator {
+    padding: 10px;
+    margin-top: 60px;
+  }
+
+  .display {
+    font-size: 1.5em;
+  }
+
+  .buttons {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  button {
+    padding: 15px;
+    font-size: 1em;
+  }
+
+  .calculator {
+    max-width: 400px;
+    transform: none;
+  }
+
+  .buttons .backspace {
+    grid-column: span 2;
+  }
+
+  /* Mobile-specific adjustments that were previously in a separate block */
+  .buttons .numbers {
+    display: none;
+  }
+
+  .numpad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  /* visibility helpers */
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Mobile-Specific Components */
+.numpad { 
+  display: none; 
+}
+
+@media (max-width: 768px) {
+  .buttons { grid-template-columns: repeat(5, 1fr); }
+  .buttons .numbers { display: none; }
+
+  .numpad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 6px;
+  }
+}
+
+/* Hide for screen sizes */
+.hide-mobile { display: initial; }
+
+@media (max-width: 768px) {
+  .hide-mobile { display: none !important; }
+}
+
+@media (min-width: 769px) {
+  .hide-desktop { display: none !important; }
+}
+
+@media (max-width: 600px) {
+  .keybind-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+  .keybind-table {
+    width: 100%;
+  }
+}
+
+@media (max-width: 540px) {
+  .buttons { grid-auto-rows: 56px; }
+}

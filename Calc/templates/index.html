@@ -1,0 +1,205 @@
+<!--
+    Scientific Calculator Template
+    Extends base layout and implements a full-featured calculator interface
+    Features:
+    - Scientific functions (trig, logs, powers)
+    - Memory operations
+    - Angle mode toggle (DEG/RAD)
+    - Responsive design with mobile/desktop layouts
+-->
+
+{% extends "layout.html" %}
+
+<!--
+    Button Rendering Macro
+    Generates calculator buttons with consistent attributes
+    Parameters:
+    - buttons: List of button configs containing:
+        - label: Button text/HTML
+        - action_value: JavaScript action to execute
+        - class: Optional CSS classes
+        - id: Optional element ID
+-->
+{% macro render_buttons(buttons) %}
+  {% for btn in buttons %}
+    <button
+      {% if btn.id %}id="{{ btn.id }}"{% endif %}
+      {% if btn.class %}class="{{ btn.class }}"{% endif %}
+      data-action="{{ btn.action_value }}"
+      aria-label="{{ btn.label | striptags }}"
+    >{{ btn.label | safe }}</button>
+  {% endfor %}
+{% endmacro %}
+
+{% block title %}Calculator{% endblock %}
+{% block header %}Calculator{% endblock %}
+
+{% block content %}
+<div class="calculator">
+    <!-- Calculator Display -->
+    <!-- Uses ARIA live region for accessibility -->
+    <div class="display" id="display" role="status" aria-live="polite"> 0 </div>
+
+    <!-- 
+        Desktop Button Configuration
+        Organized in functional groups:
+        1. Clear/Delete controls
+        2. Memory and mode operations
+        3. Parentheses and basic operators
+        4. Trigonometric functions
+        5. Number pad with operations
+        6. Advanced math functions
+        7. Constants and special operators
+    -->
+    {% set desktop_buttons = [
+        {'label': 'C', 'action_value': 'clearDisplay()'},
+        {'label': '←', 'action_value': 'deleteLast()', 'class': 'backspace'},
+        
+        {'label': 'M+', 'action_value': 'saveMemory()'},
+        {'label': 'M', 'action_value': 'useMemory()'},
+        {'label': 'MC', 'action_value': 'clearMemory()'},
+        {'label': 'Mode: DEG', 'action_value': 'toggleAngleMode()', 'class': 'mode', 'id': 'mode'},
+        
+        {'label': '(', 'action_value': '('},
+        {'label': ')', 'action_value': ')'},
+        {'label': '÷', 'action_value': '÷', 'class': 'hide-mobile'},
+        
+        {'label': 'sin', 'action_value': 'sin('},
+        {'label': 'cos', 'action_value': 'cos('},
+        {'label': 'tan', 'action_value': 'tan('},
+        {'label': 'sin⁻¹', 'action_value': 'sin⁻¹('},
+        {'label': 'cos⁻¹', 'action_value': 'cos⁻¹('},
+        {'label': 'tan⁻¹', 'action_value': 'tan⁻¹('},
+        
+        {'label': '7', 'action_value': '7', 'class': 'numbers'},
+        {'label': '8', 'action_value': '8', 'class': 'numbers'},
+        {'label': '9', 'action_value': '9', 'class': 'numbers'},
+        {'label': '×', 'action_value': '×', 'class': 'hide-mobile'},
+        
+        {'label': 'x²', 'action_value': '²'},
+        {'label': 'x³', 'action_value': '³'},
+        {'label': 'x<sup>y</sup>', 'action_value': '^'},
+        {'label': '√', 'action_value': '√('},
+        {'label': '³√', 'action_value': '³√('},
+        {'label': 'abs', 'action_value': 'abs('},
+        
+        {'label': '4', 'action_value': '4', 'class': 'numbers'},
+        {'label': '5', 'action_value': '5', 'class': 'numbers'},
+        {'label': '6', 'action_value': '6', 'class': 'numbers'},
+        {'label': '-', 'action_value': '-', 'class': 'hide-mobile'},
+        
+        {'label': 'RAND', 'action_value': 'random'},
+        {'label': ',', 'action_value': ','},
+        {'label': '!', 'action_value': '!'},
+        {'label': '𝔦', 'action_value': '𝔦'},
+        {'label': 'π', 'action_value': 'π'},
+        {'label': 'mod', 'action_value': 'mod'},
+        
+        {'label': '1', 'action_value': '1', 'class': 'numbers'},
+        {'label': '2', 'action_value': '2', 'class': 'numbers'},
+        {'label': '3', 'action_value': '3', 'class': 'numbers'},
+        {'label': '+', 'action_value': '+', 'class': 'hide-mobile'},
+        
+        {'label': 'ln', 'action_value': 'ln('},
+        {'label': 'log', 'action_value': 'log('},
+        {'label': 'e', 'action_value': 'e'},
+        {'label': 'EE', 'action_value': 'E'},
+        {'label': '₁₀^', 'action_value': '₁₀^('},
+        {'label': '%', 'action_value': '%'},
+        
+        {'label': '=', 'action_value': 'calculate()', 'class': 'equals hide-mobile'},
+        {'label': '0', 'action_value': '0', 'class': 'numbers'},
+        {'label': '.', 'action_value': '.'}
+    ] %}
+
+    <!-- 
+        Mobile Button Configuration
+        Simplified layout optimized for small screens
+        Provides essential calculator functions:
+        - Basic arithmetic operators
+        - Number pad (0-9)
+        - Equals button
+    -->
+    {% set mobile_buttons = [
+        {'label': '7', 'action_value': '7', 'class': 'numbers'},
+        {'label': '8', 'action_value': '8', 'class': 'numbers'},
+        {'label': '9', 'action_value': '9', 'class': 'numbers'},
+        {'label': '÷', 'action_value': '÷'},
+
+        {'label': '4', 'action_value': '4', 'class': 'numbers'},
+        {'label': '5', 'action_value': '5', 'class': 'numbers'},
+        {'label': '6', 'action_value': '6', 'class': 'numbers'},
+        {'label': '×', 'action_value': '×'},
+
+        {'label': '1', 'action_value': '1', 'class': 'numbers'},
+        {'label': '2', 'action_value': '2', 'class': 'numbers'},
+        {'label': '3', 'action_value': '3', 'class': 'numbers'},
+        {'label': '-', 'action_value': '-'},
+        
+        {'label': '0', 'action_value': '0', 'class': 'numbers'},
+        {'label': '=', 'action_value': 'calculate()', 'class': 'equals'},
+        {'label': '+', 'action_value': '+'}
+    ] %}
+
+    <!-- 
+        Button Containers
+        Desktop: Full scientific calculator layout
+        Mobile: Simplified numpad overlay
+    -->
+    <div class="buttons">
+        {{ render_buttons(desktop_buttons) }}
+    </div>
+
+    <div class="numpad mobile-only">
+        {{ render_buttons(mobile_buttons) }}
+    </div>
+</div>
+
+<div id="overlay">
+  <div id="overlayBox">
+    <h2>Keyboard Shortcuts</h2>
+    <div class="keybind-wrapper">
+        <table class="keybind-table">
+            <caption>Basic Keys</caption>
+            <tr><th>Key</th><th>Action</th></tr>
+            <tr><td>Enter</td><td>Calculate</td></tr>
+            <tr><td>Backspace</td><td>Delete last entry</td></tr>
+            <tr><td>Escape</td><td>Clear display</td></tr>
+            <tr><td>0–9</td><td>Input numbers</td></tr>
+            <tr><td>.</td><td>Decimal point</td></tr>
+            <tr><td>+</td><td>Addition</td></tr>
+            <tr><td>-</td><td>Subtraction</td></tr>
+            <tr><td>*</td><td>Multiplication</td></tr>
+            <tr><td>/ or \</td><td>Division</td></tr>
+            <tr><td>^</td><td>Exponent</td></tr>
+            <tr><td>( )</td><td>Parentheses</td></tr>
+        </table>
+
+        <table class="keybind-table">
+            <caption>Functions & Memory</caption>
+            <tr><th>Key</th><th>Action</th></tr>
+            <tr><td>P</td><td>Insert π</td></tr>
+            <tr><td>E</td><td>Insert e</td></tr>
+            <tr><td>I</td><td>Insert 𝔦 (imaginary)</td></tr>
+            <tr><td>S</td><td>Square (²)</td></tr>
+            <tr><td>R</td><td>Square root (√)</td></tr>
+            <tr><td>C</td><td>Cube (³)</td></tr>
+            <tr><td>Q</td><td>Cube root (³√)</td></tr>
+            <tr><td>L</td><td>Natural log (ln)</td></tr>
+            <tr><td>G</td><td>Log base 10 (log)</td></tr>
+            <tr><td>M</td><td>Save to memory</td></tr>
+            <tr><td>U</td><td>Use memory</td></tr>
+            <tr><td>A</td><td>Toggle DEG/RAD</td></tr>
+        </table>
+    </div>
+    <button id="closeOverlay">Close</button>
+  </div>
+</div>
+
+
+{% endblock %}
+
+<!-- Calculator Core Logic -->
+{% block scripts %}
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+{% endblock %}

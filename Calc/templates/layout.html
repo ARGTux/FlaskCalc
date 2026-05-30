@@ -1,0 +1,51 @@
+<!--
+    Base Layout Template
+    Provides common structure for calculator applications
+    Inheritable by other templates using Jinja2 blocks
+-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Responsive viewport and character encoding -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+
+        <!-- Dynamic title block for page-specific titles -->
+        <title>{% block title %}Flask{% endblock %}</title>
+        {% set page_title = self.title() %}
+
+        <!-- External Resources -->
+        <!-- Custom styles -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <!-- Math.js library for advanced calculations -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.10.1/math.js"></script>
+        <!-- Site favicon -->
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    </head>
+    <body>
+        <!-- Navigation Header -->
+        <!-- Contains calculator mode toggle buttons and page title -->
+        <header>
+            <!-- Overlay -->
+            {% if page_title == "Calculator" %}
+                <div class="help-container">
+                    <button id="openOverlay" title="Help">Help</button>
+                </div>
+            {% endif %}
+            <button onclick="location.href='/'">Calculator</button>
+            <!-- <h1>{% block header %}Flask{% endblock %}</h1> -->
+            <button onclick="location.href='/graph'">Graphing Calc</button>
+        </header>
+
+        <!-- Main Content Container -->
+        <!-- Holds page-specific content injected via content block -->
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+        
+        <!-- Page-specific Scripts Block -->
+        <!-- Allows child templates to add their own scripts -->
+        {% block scripts %}{% endblock %}
+    </body>
+</html>

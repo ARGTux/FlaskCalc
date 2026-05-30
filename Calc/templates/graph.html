@@ -1,0 +1,52 @@
+<!--
+    Graphing Calculator Template
+    Extends base layout to provide function plotting capabilities
+    Features:
+    - Multiple function inputs
+    - Interactive plot display
+    - Real-time graph updates
+-->
+
+{% extends "layout.html" %}
+
+<!-- Page identification -->
+<!-- {% block title %}Graphing Calculator{% endblock %} -->
+{% block header %}Graphing{% endblock %}
+
+{% block content %}
+<!-- Main graphing calculator container -->
+<div class="graph-calculator">
+    <!-- Function input section -->
+    <div class="function-control">
+        <!-- Plot configuration form -->
+        <!-- Handles function input and plot triggering -->
+        <form id="plotForm" class="plotForm">
+            <!-- Dynamic function input container -->
+            <!-- Populated by graph.js -->
+            <div class="functionInputs" id="functionInputs"></div>
+            <div class="modeToggle">
+                <label>
+                    <input type="checkbox" id="radianToggle" checked>
+                    Show angles in radians
+                </label>
+            </div>
+
+            <!-- Plot trigger button -->
+            <button type="submit" class="plot">Plot</button>
+        </form>
+    </div>
+
+    <!-- Plotly.js graph container -->
+    <!-- Displays interactive function plots -->
+    <div id="plotly"></div>
+</div>
+{% endblock %}
+
+<!-- Load graphing calculator scripts -->
+{% block scripts %}
+    <!-- Plotly for graphing -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Core graphing functionality -->
+    <script src="{{ url_for('static', filename='graph.js') }}" defer></script>
+{% endblock %}
+

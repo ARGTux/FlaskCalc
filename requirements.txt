@@ -1,0 +1,4 @@
+Flask==3.0.3
+
+# Note: the other packages are dependencies of Flask and are
+# installed automatically. Only list extra direct deps here.
